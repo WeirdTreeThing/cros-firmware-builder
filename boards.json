@@ -5,5 +5,12 @@
 	"ec": "reef",
 	"bmpblk": "amd64-generic",
 	"depthcharge": "snappy"
+    },
+    "careena": {
+	"coreboot": "careena",
+	"libpayload": "grunt",
+	"ec": "careena",
+	"bmpblk": "grunt",
+	"depthcharge": "grunt"
     }
 }

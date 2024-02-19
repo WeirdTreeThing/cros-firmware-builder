@@ -30,6 +30,15 @@ function add_assets()
     done
 }
 
+function agesa_rw()
+{
+    board=$1
+    rom=$2
+
+    $cbfstool $rom extract -n AGESA -f $ROOT/build/$board/AGESA
+    $cbfstool $rom add -n AGESA -f $ROOT/build/$board/AGESA -r FW_MAIN_A,FW_MAIN_B -t raw
+}
+
 function make_image()
 {
     board=$1
@@ -51,6 +60,9 @@ function make_image()
 
     # Add firmware assets
     add_assets $board $out
+
+    # Some AMD platforms may need AGESA in both RO and RW firmware
+    $cbfstool $out print | grep AGESA && agesa_rw $board $out
 
     sign_image $out
 }

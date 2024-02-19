@@ -30,9 +30,14 @@ function build_depthcharge()
     [ ! -d "depthcharge-venv" ] && create_venv
     source depthcharge-venv/bin/activate
 
+    git reset --hard
+    for patch in $ROOT/patches/depthcharge/*; do
+        patch -p1 < $patch
+    done
+
     mkdir -p $ROOT/build/$board/depthcharge
     cp $ROOT/build/$board/coreboot/static_fw_config.h $ROOT/build/$board/depthcharge/
-    cp $ROOT/sources/depthcharge/board/$board/defconfig $ROOT/build/$board/depthcharge/$board-defconfig
+    cp $ROOT/sources/depthcharge/board/$config/defconfig $ROOT/build/$board/depthcharge/$board-defconfig
     OPTS=(
         "EC_HEADERS=$ROOT/build/ec_headers"
 	"LIBPAYLOAD_DIR=$ROOT/build/$board/libpayload/libpayload"

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 source components/coreboot.sh
 source components/ec_headers.sh
@@ -12,7 +11,8 @@ source components/bmpblk.sh
 
 ROOT="${PWD}"
 
-board="snappy"
+board="$1"
+[ -z $board ] && echo "./builder.sh (board)" && exit
 mkdir -p "build/${board}"
 
 install_ec_headers

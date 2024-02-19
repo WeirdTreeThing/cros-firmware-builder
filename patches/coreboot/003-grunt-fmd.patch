@@ -1,0 +1,20 @@
+diff --git a/src/mainboard/google/kahlee/variants/baseboard/chromeos.fmd b/src/mainboard/google/kahlee/variants/baseboard/chromeos.fmd
+index d7d0a886d3..f2b0293257 100644
+--- a/src/mainboard/google/kahlee/variants/baseboard/chromeos.fmd
++++ b/src/mainboard/google/kahlee/variants/baseboard/chromeos.fmd
+@@ -28,13 +28,12 @@ FLASH@0xFF000000 0x1000000 {
+ 
+ 		WP_RO@0xC00000 0x400000 {
+ 			RO_VPD(PRESERVE)@0x0 0x4000
+-			RO_UNUSED@0x4000 0x17B000
+-			RO_SECTION@0x17F000 0x281000 {
++			RO_SECTION@0x4000 0x3fc000 {
+ 				FMAP@0x0 0x800
+ 				RO_FRID@0x800 0x40
+ 				RO_FRID_PAD@0x840 0x7c0
+ 				GBB@0x1000 0x3000
+-				COREBOOT(CBFS)@0x4000 0x27d000
++				COREBOOT(CBFS)@0x4000 0x3f8000
+ 			}
+ 		}
+ 	}
