@@ -53,6 +53,7 @@ function install_bmpblk()
     mkdir -p $ROOT/build/$board/assets/{ro,rw}
     cp $ROOT/build/$board/bmpblk/$build_target/{font,vbgfx}.bin $ROOT/build/$board/assets/ro
     cp $ROOT/build/$board/bmpblk/$build_target/locale/ro/*.bin $ROOT/build/$board/assets/ro
+    cp $ROOT/build/$board/bmpblk/$build_target/locales $ROOT/build/$board/assets/ro
 }
 
 function build_bmpblk()
