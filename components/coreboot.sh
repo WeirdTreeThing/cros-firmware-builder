@@ -40,7 +40,7 @@ function build_coreboot()
         patch -p1 < $patch
     done
     make distclean
-    cp $ROOT/configs/coreboot/$board.config .config
+    cp $ROOT/configs/coreboot/$config.config .config
     make olddefconfig
     make -j$(nproc)
     pushd util/archive

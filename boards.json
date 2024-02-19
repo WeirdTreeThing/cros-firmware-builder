@@ -12,5 +12,12 @@
 	"ec": "careena",
 	"bmpblk": "grunt",
 	"depthcharge": "grunt"
+    },
+    "vortininja": {
+	"coreboot": "meep",
+	"libpayload": "octopus",
+	"ec": "meep",
+	"bmpblk": "amd64-generic",
+	"depthcharge": "octopus"
     }
 }
