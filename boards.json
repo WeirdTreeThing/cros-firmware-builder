@@ -1,0 +1,9 @@
+{
+    "snappy": {
+	"coreboot": "snappy",
+	"libpayload": "snappy",
+	"ec": "snappy",
+	"bmpblk": "snappy",
+	"depthcharge": "snappy"
+    }
+}
