@@ -20,6 +20,16 @@ function sign_image()
 	    $rom
 }
 
+function add_assets()
+{
+    board=$1
+    rom=$2
+
+    for file in $ROOT/build/$board/assets/ro/*; do
+	    $cbfstool $rom add -r COREBOOT -f $file -n "$(basename $file)" -t raw -c lzma
+    done
+}
+
 function make_image()
 {
     board=$1
@@ -38,6 +48,9 @@ function make_image()
     # Add depthcharge payload
     add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/depthcharge.elf" "COREBOOT" $out
     add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/depthcharge.elf" "FW_MAIN_A,FW_MAIN_B" $out
+
+    # Add firmware assets
+    add_assets $board $out
 
     sign_image $out
 }

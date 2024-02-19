@@ -43,4 +43,5 @@ function build_depthcharge()
     make -j$(nproc) ${OPTS[@]} defconfig
     make -j$(nproc) ${OPTS[@]} depthcharge
     strip $ROOT/build/$board/depthcharge/depthcharge.elf
+    popd
 }

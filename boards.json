@@ -2,8 +2,8 @@
     "snappy": {
 	"coreboot": "snappy",
 	"libpayload": "snappy",
-	"ec": "snappy",
-	"bmpblk": "snappy",
+	"ec": "reef",
+	"bmpblk": "amd64-generic",
 	"depthcharge": "snappy"
     }
 }

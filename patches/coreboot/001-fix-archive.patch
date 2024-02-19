@@ -1,0 +1,13 @@
+diff --git a/util/archive/Makefile b/util/archive/Makefile
+index 2de6a6294a..4d44214102 100644
+--- a/util/archive/Makefile
++++ b/util/archive/Makefile
+@@ -1,8 +1,7 @@
+ ## SPDX-License-Identifier: GPL-2.0-only
+ PROGRAM = archive
+ HOSTCC ?= gcc
+-WERROR=-Werror
+-CFLAGS=-O2 -Wall -Wextra -Wshadow ${WERROR}
++CFLAGS=-O2 -Wno-error -Wshadow ${WERROR}
+ 
+ SRCS = $(PROGRAM).c
