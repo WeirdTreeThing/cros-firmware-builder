@@ -6,7 +6,7 @@ index 5ae8bfe0..b4d2284e 100644
  
  void ui_beep(uint32_t msec, uint32_t frequency)
  {
-+       return;
-        uint64_t start;
-        uint64_t elapsed;
-        int ret;
++	return;
+ 	uint64_t start;
+ 	uint64_t elapsed;
+ 	int ret;
