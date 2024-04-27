@@ -13,7 +13,7 @@ function clone_depthcharge()
     git clone $depthcharge_url -b $depthcharge_branch $ROOT/sources/depthcharge
 }
 
-function create_venv()
+function depthcharge_create_venv()
 {
     python -m venv depthcharge-venv
     source depthcharge-venv/bin/activate
@@ -27,7 +27,7 @@ function build_depthcharge()
 
     [ ! -d "$ROOT/sources/depthcharge" ] && clone_depthcharge
     pushd $ROOT/sources/depthcharge
-    [ ! -d "depthcharge-venv" ] && create_venv
+    [ ! -d "depthcharge-venv" ] && depthcharge_create_venv
     source depthcharge-venv/bin/activate
 
     git reset --hard

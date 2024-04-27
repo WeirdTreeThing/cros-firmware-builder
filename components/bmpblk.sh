@@ -14,7 +14,7 @@ function get_bmpblk_config()
     jq -r ".${board}.bmpblk" "${ROOT}/boards.json"
 }
 
-function create_venv()
+function bmpblk_create_venv()
 {
     python -m venv bmpblk-venv
     source bmpblk-venv/bin/activate
@@ -64,7 +64,7 @@ function build_bmpblk()
     [ ! -d "$ROOT/sources/bmpblk" ] && clone_bmpblk
 
     pushd $ROOT/sources/bmpblk
-    [ ! -d "bmpblk-venv" ] && create_venv
+    [ ! -d "bmpblk-venv" ] && bmpblk_create_venv
     [ ! -d "fonts" ] && install_fonts
     export FONTCONFIG_FILE="${PWD}/fonts/local-conf.xml"
     source bmpblk-venv/bin/activate
