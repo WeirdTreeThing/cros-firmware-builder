@@ -1,23 +1,23 @@
 {
-    "snappy": {
-	"coreboot": "snappy",
-	"libpayload": "snappy",
-	"ec": "reef",
-	"bmpblk": "amd64-generic",
-	"depthcharge": "snappy"
-    },
-    "careena": {
-	"coreboot": "careena",
-	"libpayload": "grunt",
-	"ec": "careena",
-	"bmpblk": "grunt",
-	"depthcharge": "grunt"
-    },
-    "vortininja": {
-	"coreboot": "meep",
-	"libpayload": "octopus",
-	"ec": "meep",
-	"bmpblk": "amd64-generic",
-	"depthcharge": "octopus"
-    }
+	"snappy": {
+		"coreboot": "snappy",
+		"libpayload": "snappy",
+		"ec": "reef",
+		"bmpblk": "amd64-generic",
+		"depthcharge": "snappy"
+	},
+	"careena": {
+		"coreboot": "careena",
+		"libpayload": "grunt",
+		"ec": "careena",
+		"bmpblk": "grunt",
+		"depthcharge": "grunt"
+	},
+	"vortininja": {
+		"coreboot": "meep",
+		"libpayload": "octopus",
+		"ec": "meep",
+		"bmpblk": "amd64-generic",
+		"depthcharge": "octopus"
+	}
 }
