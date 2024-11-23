@@ -1,5 +1,5 @@
 depthcharge_url="https://chromium.googlesource.com/chromiumos/platform/depthcharge"
-depthcharge_branch="release-R123-15786.B"
+depthcharge_branch="main"
 
 function get_depthcharge_config()
 {

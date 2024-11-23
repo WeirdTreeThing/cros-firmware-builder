@@ -1,5 +1,5 @@
 coreboot_url="https://github.com/MrChromebox/coreboot"
-coreboot_tag="MrChromebox-4.22.2"
+coreboot_tag="next"
 
 function get_coreboot_config()
 {
