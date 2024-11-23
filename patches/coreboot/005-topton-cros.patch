@@ -1,0 +1,140 @@
+diff --git a/src/mainboard/topton/adl/Kconfig b/src/mainboard/topton/adl/Kconfig
+index 94cd222a67..57df81ad21 100644
+--- a/src/mainboard/topton/adl/Kconfig
++++ b/src/mainboard/topton/adl/Kconfig
+@@ -13,6 +13,7 @@ config BOARD_SPECIFIC_OPTIONS
+ 	select SOC_INTEL_ALDERLAKE_PCH_N
+ 	select INTEL_GMA_HAVE_VBT
+ 	select SOC_INTEL_COMMON_BLOCK_HDA_VERB
++	select MAINBOARD_HAS_CHROMEOS
+ 
+ config MAINBOARD_DIR
+ 	default "topton/adl"
+@@ -20,4 +21,7 @@ config MAINBOARD_DIR
+ config MAINBOARD_PART_NUMBER
+ 	default "X2F_N100"
+ 
++config FMDFILE
++	default "src/mainboard/\$(CONFIG_MAINBOARD_DIR)/chromeos.fmd" if CHROMEOS
++
+ endif # BOARD_TOPTON_X2F_N100
+diff --git a/src/mainboard/topton/adl/Makefile.mk b/src/mainboard/topton/adl/Makefile.mk
+index 62d07cd369..20bb153afb 100644
+--- a/src/mainboard/topton/adl/Makefile.mk
++++ b/src/mainboard/topton/adl/Makefile.mk
+@@ -1,5 +1,12 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ 
+ bootblock-y += bootblock.c
++bootblock-$(CONFIG_CHROMEOS) += chromeos.c
++
++verstage-$(CONFIG_CHROMEOS) += chromeos.c
++
+ romstage-y += romstage_fsp_params.c
++romstage-$(CONFIG_CHROMEOS) += chromeos.c
++
+ ramstage-y += mainboard.c
++ramstage-$(CONFIG_CHROMEOS) += chromeos.c
+diff --git a/src/mainboard/topton/adl/chromeos.c b/src/mainboard/topton/adl/chromeos.c
+new file mode 100644
+index 0000000000..a4e8c4c8aa
+--- /dev/null
++++ b/src/mainboard/topton/adl/chromeos.c
+@@ -0,0 +1,50 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#include <bootmode.h>
++#include <boot/coreboot_tables.h>
++#include <gpio.h>
++#include <types.h>
++#include <vendorcode/google/chromeos/chromeos.h>
++
++void fill_lb_gpios(struct lb_gpios *gpios)
++{
++	struct lb_gpio chromeos_gpios[] = {
++		{-1, ACTIVE_HIGH, get_lid_switch(), "lid"},
++		{-1, ACTIVE_HIGH, 0, "power"},
++		{-1, ACTIVE_HIGH, gfx_get_init_done(), "oprom"},
++		{-1, ACTIVE_HIGH, 0, "EC in RW"},
++	};
++	lb_add_gpios(gpios, chromeos_gpios, ARRAY_SIZE(chromeos_gpios));
++}
++
++static const struct cros_gpio cros_gpios[] = {
++        CROS_GPIO_REC_AL(CROS_GPIO_VIRTUAL, CROS_GPIO_DEVICE_NAME),
++};
++DECLARE_CROS_GPIOS(cros_gpios);
++
++#if !CONFIG(EC_GOOGLE_CHROMEEC_SWITCHES)
++int get_lid_switch(void)
++{
++	/* Lid always open */
++	return 1;
++}
++
++int get_recovery_mode_switch(void)
++{
++	return 0;
++}
++
++#endif /*!CONFIG(EC_GOOGLE_CHROMEEC_SWITCHES) */
++
++int get_write_protect_state(void)
++{
++	/* No write protect */
++	return 0;
++}
++
++int get_ec_is_trusted(void)
++{
++	/* Do not have a Chrome EC involved in entering recovery mode;
++	   Always return trusted. */
++	return 1;
++}
+diff --git a/src/mainboard/topton/adl/chromeos.fmd b/src/mainboard/topton/adl/chromeos.fmd
+new file mode 100644
+index 0000000000..c183625326
+--- /dev/null
++++ b/src/mainboard/topton/adl/chromeos.fmd
+@@ -0,0 +1,41 @@
++FLASH 16M {
++	SI_ALL 4176K {
++		SI_DESC 4K
++		SI_ME 4172K
++	}
++	SI_BIOS {
++		RW_SECTION_A 3468K {
++                        VBLOCK_A 8K
++                        FW_MAIN_A(CBFS)
++                        RW_FWID_A 64
++                }
++                RW_LEGACY(CBFS) 1M
++                RW_MISC 152K {
++                        UNIFIED_MRC_CACHE(PRESERVE) 128K {
++                                RECOVERY_MRC_CACHE 64K
++                                RW_MRC_CACHE 64K
++                        }
++                        RW_ELOG(PRESERVE) 4K
++                        RW_SHARED 4K {
++                                SHARED_DATA 4K
++                        }
++                        RW_VPD(PRESERVE) 8K
++                        RW_NVRAM(PRESERVE) 8K
++                }
++                RW_SECTION_B 3468K {
++                        VBLOCK_B 8K
++                        FW_MAIN_B(CBFS)
++                        RW_FWID_B 64
++                }
++                WP_RO 4M {
++                        RO_VPD(PRESERVE) 16K
++                        RO_GSCVD 8K
++                        RO_SECTION {
++                                FMAP 2K
++                                RO_FRID 64
++                                GBB@4K 12K
++                                COREBOOT(CBFS)
++                        }
++                }
++	}
++}

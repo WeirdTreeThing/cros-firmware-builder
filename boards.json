@@ -19,5 +19,11 @@
 		"ec": "meep",
 		"bmpblk": "amd64-generic",
 		"depthcharge": "octopus"
+	},
+	"topton": {
+		"coreboot": "topton",
+		"libpayload": "topton",
+		"bmpblk": "amd64-generic",
+		"depthcharge": "topton"
 	}
 }

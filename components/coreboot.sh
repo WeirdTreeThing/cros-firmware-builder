@@ -1,5 +1,5 @@
-coreboot_url="https://github.com/MrChromebox/coreboot"
-coreboot_tag="next"
+coreboot_url="https://github.com/coreboot/coreboot"
+coreboot_tag="main"
 
 function get_coreboot_config()
 {

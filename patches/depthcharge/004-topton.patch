@@ -1,0 +1,97 @@
+diff --git a/board/topton/defconfig b/board/topton/defconfig
+new file mode 100644
+index 00000000..e163c49c
+--- /dev/null
++++ b/board/topton/defconfig
+@@ -0,0 +1,32 @@
++# Arch
++CONFIG_ARCH_X86=y
++
++# Board
++CONFIG_BOARD_DIR="topton"
++
++# Image
++CONFIG_HEAP_SIZE=0x02600000
++
++# Vboot
++CONFIG_CROSSYSTEM_ACPI=y
++
++# Kernel format
++CONFIG_KERNEL_ZIMAGE=y
++CONFIG_KERNEL_MULTIBOOT=y
++CONFIG_KERNEL_MULTIBOOT_ZBI=y
++
++# Drivers
++CONFIG_DRIVER_BUS_I2C_DESIGNWARE=y
++CONFIG_DRIVER_BUS_I2C_DESIGNWARE_PCI=y
++CONFIG_DRIVER_FLASH_MEMMAPPED=y
++CONFIG_DRIVER_GPIO_ALDERLAKE=y
++CONFIG_DRIVER_INPUT_PS2=y
++CONFIG_DRIVER_POWER_PCH=y
++CONFIG_DRIVER_SOC_ALDERLAKE=y
++CONFIG_DRIVER_SOC_ALDERLAKE_N=y
++CONFIG_MOCK_TPM=y
++
++# Storage
++CONFIG_DRIVER_STORAGE_SDHCI_PCI=y
++CONFIG_DRIVER_SDHCI=y
++CONFIG_DRIVER_STORAGE_NVME=y
+diff --git a/src/board/topton/Makefile.inc b/src/board/topton/Makefile.inc
+new file mode 100644
+index 00000000..9b50f2c5
+--- /dev/null
++++ b/src/board/topton/Makefile.inc
+@@ -0,0 +1 @@
++depthcharge-y += board.c
+diff --git a/src/board/topton/board.c b/src/board/topton/board.c
+new file mode 100644
+index 00000000..a91f7855
+--- /dev/null
++++ b/src/board/topton/board.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * These needs to be included first.
++ * Some of the driver headers would be dependent on these.
++ */
++#include <commonlib/list.h>
++#include <pci.h>
++#include <pci/pci.h>
++
++#include "base/init_funcs.h"
++#include "drivers/bus/i2c/designware.h"
++#include "drivers/bus/i2c/i2c.h"
++#include "drivers/flash/flash.h"
++#include "drivers/flash/memmapped.h"
++#include "drivers/gpio/sysinfo.h"
++#include "drivers/gpio/alderlake.h"
++#include "drivers/gpio/gpio.h"
++#include "drivers/power/pch.h"
++#include "drivers/soc/alderlake.h"
++#include "drivers/storage/storage_common.h"
++#include "vboot/util/flag.h"
++#include <libpayload.h>
++#include <sysinfo.h>
++
++__weak const struct storage_config *variant_get_storage_configs(size_t *count)
++{
++	static const struct storage_config storage_configs[] = {
++		{ .media = STORAGE_NVME, .pci_dev = PCH_DEV_PCIE8 },
++		{ .media = STORAGE_SDHCI, .pci_dev = PCH_DEV_PCIE7 },
++	};
++
++	*count = ARRAY_SIZE(storage_configs);
++	return storage_configs;
++}
++
++static int board_setup(void)
++{
++	sysinfo_install_flags(NULL);
++	power_set_ops(&alderlake_power_ops);
++	flash_set_ops(&new_mmap_flash()->ops);
++
++	return 0;
++}
++
++INIT_FUNC(board_setup);
