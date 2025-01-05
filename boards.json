@@ -3,7 +3,7 @@
 		"coreboot": "snappy",
 		"libpayload": "snappy",
 		"ec": "reef",
-		"bmpblk": "amd64-generic",
+		"bmpblk": "candy",
 		"depthcharge": "snappy"
 	},
 	"careena": {
@@ -17,7 +17,7 @@
 		"coreboot": "meep",
 		"libpayload": "octopus",
 		"ec": "meep",
-		"bmpblk": "amd64-generic",
+		"bmpblk": "candy",
 		"depthcharge": "octopus"
 	}
 }
