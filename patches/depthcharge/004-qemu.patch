@@ -1,0 +1,199 @@
+diff --git a/board/qemu/defconfig b/board/qemu/defconfig
+new file mode 100644
+index 00000000..9294aa4a
+--- /dev/null
++++ b/board/qemu/defconfig
+@@ -0,0 +1,27 @@
++# Arch
++CONFIG_ARCH_X86=y
++
++# Board
++CONFIG_BOARD_DIR="qemu"
++
++# Image
++CONFIG_HEAP_SIZE=0x02600000
++
++# Vboot
++CONFIG_CROSSYSTEM_ACPI=y
++
++# Kernel format
++CONFIG_KERNEL_ZIMAGE=y
++CONFIG_KERNEL_MULTIBOOT=y
++CONFIG_KERNEL_MULTIBOOT_ZBI=y
++
++# Drivers
++CONFIG_DRIVER_INPUT_PS2=y
++CONFIG_DRIVER_POWER_PCH=y
++CONFIG_MOCK_TPM=y
++CONFIG_DRIVER_FLASH_MEMMAPPED_QEMU=y
++
++# Storage
++CONFIG_DRIVER_AHCI=y
++CONFIG_DRIVER_STORAGE_SDHCI_PCI=y
++CONFIG_DRIVER_SDHCI=y
+diff --git a/src/board/qemu/Makefile.inc b/src/board/qemu/Makefile.inc
+new file mode 100644
+index 00000000..9b50f2c5
+--- /dev/null
++++ b/src/board/qemu/Makefile.inc
+@@ -0,0 +1 @@
++depthcharge-y += board.c
+diff --git a/src/board/qemu/board.c b/src/board/qemu/board.c
+new file mode 100644
+index 00000000..edee8766
+--- /dev/null
++++ b/src/board/qemu/board.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * These needs to be included first.
++ * Some of the driver headers would be dependent on these.
++ */
++#include <commonlib/list.h>
++#include <pci.h>
++#include <pci/pci.h>
++
++#include "base/init_funcs.h"
++#include "drivers/flash/flash.h"
++#include "drivers/flash/memmapped.h"
++#include "drivers/gpio/gpio.h"
++#include "drivers/gpio/sysinfo.h"
++#include "drivers/power/pch.h"
++#include "drivers/storage/storage_common.h"
++#include "vboot/util/flag.h"
++#include <libpayload.h>
++#include <sysinfo.h>
++
++static int board_setup(void)
++{
++	sysinfo_install_flags(NULL);
++	
++	flash_set_ops(&new_mmap_flash()->ops);
++
++	return 0;
++}
++
++INIT_FUNC(board_setup);
+diff --git a/src/drivers/flash/Kconfig b/src/drivers/flash/Kconfig
+index d91414b8..dae0db29 100644
+--- a/src/drivers/flash/Kconfig
++++ b/src/drivers/flash/Kconfig
+@@ -20,6 +20,11 @@ config DRIVER_FLASH_MEMMAPPED
+ 	select DRIVER_FLASH
+ 	default n
+ 
++config DRIVER_FLASH_MEMMAPPED_QEMU
++    bool "Memory mapped flash for qemu"
++    select DRIVER_FLASH
++    default n
++
+ config DRIVER_FLASH_MTK_SNFC
+ 	bool "Mediatek SPI-NOR flash controller (SNFC)"
+ 	select DRIVER_FLASH
+diff --git a/src/drivers/flash/Makefile.inc b/src/drivers/flash/Makefile.inc
+index 15509633..a535c342 100644
+--- a/src/drivers/flash/Makefile.inc
++++ b/src/drivers/flash/Makefile.inc
+@@ -14,6 +14,7 @@
+ depthcharge-$(CONFIG_DRIVER_FLASH) += flash.c block_flash.c
+ depthcharge-$(CONFIG_DRIVER_FLASH_FAST_SPI) += fast_spi.c
+ depthcharge-$(CONFIG_DRIVER_FLASH_MEMMAPPED) += memmapped.c
++depthcharge-$(CONFIG_DRIVER_FLASH_MEMMAPPED_QEMU) += memmapped-qemu.c
+ depthcharge-$(CONFIG_DRIVER_FLASH_MMAP_BACKED) += memmapped.c
+ depthcharge-$(CONFIG_DRIVER_FLASH_SPI) += spi.c
+ depthcharge-$(CONFIG_DRIVER_CBFS_FLASH) += cbfs.c
+diff --git a/src/drivers/flash/memmapped-qemu.c b/src/drivers/flash/memmapped-qemu.c
+new file mode 100644
+index 00000000..16f9ecd6
+--- /dev/null
++++ b/src/drivers/flash/memmapped-qemu.c
+@@ -0,0 +1,88 @@
++/*
++ * Copyright 2013 Google LLC
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but without any warranty; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <libpayload.h>
++
++#include "drivers/flash/flash.h"
++#include "drivers/flash/memmapped.h"
++
++#define ROM_SIZE 0x00800000 // Assume 8MiB rom
++
++const struct flash_mmap_window window = {
++	.flash_base = 0,
++	.host_base = 0x100000000 - ROM_SIZE,
++    .size = ROM_SIZE,
++};
++
++static const struct flash_mmap_window *find_mmap_window(uint32_t offset,
++							uint32_t size)
++{
++	return &window;
++}
++
++static int mmap_flash_read(void *buffer, uint32_t offset, uint32_t size,
++			   const struct flash_mmap_window *window)
++{
++	/* Convert offset within flash space into an offset within host space */
++	uint32_t rel_offset = offset - window->flash_base;
++	memcpy(buffer, (void *)(uintptr_t)(window->host_base + rel_offset),
++	       size);
++	return size;
++}
++
++static int mmap_backed_flash_read(FlashOps *me, void *buffer, uint32_t offset,
++				  uint32_t size)
++{
++	MmapFlash *flash = container_of(me, MmapFlash, ops);
++	const struct flash_mmap_window *window = find_mmap_window(offset, size);
++
++	if (window)
++		return mmap_flash_read(buffer, offset, size, window);
++
++	if (!flash->base_ops) {
++		printf("ERROR: Offset(%#x)/size(%#x) out of bounds!\n",
++		       offset, size);
++		return -1;
++	}
++
++	return flash_read_ops(flash->base_ops, buffer, offset, size);
++}
++
++static int mmap_backed_flash_write(FlashOps *me, const void *buffer,
++				   uint32_t offset, uint32_t size)
++{
++	MmapFlash *flash = container_of(me, MmapFlash, ops);
++	return flash_write_ops(flash->base_ops, buffer, offset, size);
++}
++
++static int mmap_backed_flash_erase(FlashOps *me, uint32_t offset, uint32_t size)
++{
++	MmapFlash *flash = container_of(me, MmapFlash, ops);
++	return flash_erase_ops(flash->base_ops, offset, size);
++}
++
++MmapFlash *new_mmap_backed_flash(FlashOps *base_ops)
++{
++	MmapFlash *flash = xzalloc(sizeof(*flash));
++	flash->ops.read = mmap_backed_flash_read;
++	if (base_ops) {
++		flash->ops.write = mmap_backed_flash_write;
++		flash->ops.erase = mmap_backed_flash_erase;
++		flash->base_ops = base_ops;
++	}
++	return flash;
++}

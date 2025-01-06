@@ -19,5 +19,12 @@
 		"ec": "meep",
 		"bmpblk": "candy",
 		"depthcharge": "octopus"
+	},
+	"qemu": {
+		"coreboot": "qemu",
+		"libpayload": "qemu",
+		"ec": "none",
+		"bmpblk": "rammus",
+		"depthcharge": "qemu"
 	}
 }
