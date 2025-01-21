@@ -1,8 +1,8 @@
 diff --git a/src/mainboard/google/reef/chromeos.fmd b/src/mainboard/google/reef/chromeos.fmd
-index 87eb4e76dc..de5bd94fa6 100644
+index 87eb4e76dc..b8d3622a2d 100644
 --- a/src/mainboard/google/reef/chromeos.fmd
 +++ b/src/mainboard/google/reef/chromeos.fmd
-@@ -1,54 +1,43 @@
+@@ -1,54 +1,36 @@
 -FLASH 16M {
 -	WP_RO@0x0 0x400000 {
 -		SI_DESC@0x0 0x1000
@@ -56,12 +56,12 @@ index 87eb4e76dc..de5bd94fa6 100644
 -	# BIOS       --> 4K to 0xf7f000
 -	# Device ext --> 0xf7f000 to 0xfff000
 -	UNUSED_HOLE@0xfff000 0x1000
-+FLASH@0xff000000 0x1000000 {
-+        SI_ALL@0x0 0x400000 {
-+                SI_DESC@0x0 0x1000
-+                IFWI@0x1000 0x1ff000
++FLASH@0xFF000000 16M {
++        SI_ALL 2M {
++                SI_DESC 4K
++                IFWI 2044K
 +        }
-+        SI_BIOS@0x400000 0xc00000 {
++        SI_BIOS {
 +                RW_SECTION_A@0x0 0x368000 {
 +                        VBLOCK_A@0x0 0x10000
 +                        FW_MAIN_A(CBFS)@0x10000 0x357fc0
@@ -72,22 +72,15 @@ index 87eb4e76dc..de5bd94fa6 100644
 +                        FW_MAIN_B(CBFS)@0x10000 0x357fc0
 +                        RW_FWID_B@0x367fc0 0x40
 +                }
-+                RW_MISC@0x6D0000 0x30000 {
++                RW_MISC@0x6D0000 0x26000 {
 +                        UNIFIED_MRC_CACHE@0x0 0x20000 {
 +                                RECOVERY_MRC_CACHE@0x0 0x10000
 +                                RW_MRC_CACHE@0x10000 0x10000
 +                        }
-+                        RW_ELOG(PRESERVE)@0x20000 0x4000
-+                        RW_SHARED@0x24000 0x4000 {
-+                                SHARED_DATA@0x0 0x2000
-+                                VBLOCK_DEV@0x2000 0x2000
-+                        }
-+                        RW_VPD(PRESERVE)@0x28000 0x2000
-+                        RW_NVRAM(PRESERVE)@0x2a000 0x6000
++                        RW_NVRAM(PRESERVE)@0x20000 0x6000
 +                }
-+                # RW_LEGACY needs to be minimum of 1MB
-+                RW_LEGACY(CBFS)@0x700000 0x100000
-+                WP_RO@0x800000 0x400000 {
++                RW_LEGACY(CBFS) 2M
++                WP_RO@10M 4M {
 +                        RO_VPD(PRESERVE)@0x0 0x4000
 +                        RO_SECTION@0x4000 0x3fc000 {
 +                                FMAP@0x0 0x800
