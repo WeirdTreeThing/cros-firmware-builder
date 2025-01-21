@@ -31,6 +31,7 @@ function build_depthcharge()
     source depthcharge-venv/bin/activate
 
     git reset --hard
+	git clean -df
     for patch in $ROOT/patches/depthcharge/*; do
         patch -p1 < $patch
     done
