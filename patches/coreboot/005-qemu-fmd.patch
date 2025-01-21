@@ -1,0 +1,13 @@
+diff --git a/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd b/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
+index 8064fdfeaf..59d20c4264 100644
+--- a/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
++++ b/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
+@@ -15,7 +15,7 @@ FLASH@0xff800000 0x800000 {
+ 			VBLOCK_DEV 0x2000
+ 		}
+ 		RW_VPD(PRESERVE) 0x1000
+-		RW_LEGACY(CBFS) 0x10000
++		RW_LEGACY(CBFS) 0x100000
+ 		WP_RO {
+ 			FMAP 0x800
+ 			RO_FRID 0x40
