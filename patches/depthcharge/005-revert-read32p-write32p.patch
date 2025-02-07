@@ -1,0 +1,194 @@
+diff --git a/src/board/grunt/board.c b/src/board/grunt/board.c
+index 0c32ae2b..f963fffb 100644
+--- a/src/board/grunt/board.c
++++ b/src/board/grunt/board.c
+@@ -99,7 +99,7 @@ static void audio_bt_i2s_setup(void)
+ 	uintptr_t gmm_base = pci_read_config32(PCI_DEV(0, 0x1, 0), 0x24);
+ 	gmm_base &= 0xfffffff0;
+ 
+-	write32p(gmm_base + GMMx1475C, 0x00);
++	write32((void *)gmm_base + GMMx1475C, 0x00);
+ }
+ 
+ static int (*gpio_i2s_play)(struct SoundOps *me, uint32_t msec,
+diff --git a/src/drivers/bus/i2c/armada38x_i2c.c b/src/drivers/bus/i2c/armada38x_i2c.c
+index df36508b..78fbed94 100644
+--- a/src/drivers/bus/i2c/armada38x_i2c.c
++++ b/src/drivers/bus/i2c/armada38x_i2c.c
+@@ -191,11 +191,11 @@ static uint32_t who_am_i(void);
+ 
+ static inline uint32_t i2c_reg_read(uint32_t reg)
+ {
+-	return read32p(reg);
++	return read32((void *)reg);
+ }
+ static inline void i2c_reg_write(uint32_t reg, uint32_t val)
+ {
+-	write32p(reg, val);
++	write32((void *)reg, val);
+ }
+ static inline void i2c_reg_bit_set(uint32_t reg, uint32_t bit_mask)
+ {
+diff --git a/src/drivers/bus/spi/armada38x_spi.c b/src/drivers/bus/spi/armada38x_spi.c
+index 3a87ba27..dfec3609 100644
+--- a/src/drivers/bus/spi/armada38x_spi.c
++++ b/src/drivers/bus/spi/armada38x_spi.c
+@@ -123,11 +123,11 @@ param define end
+ *******************************************************************************/
+ static inline uint32_t spi_reg_read(uint32_t reg)
+ {
+-	return read32p(reg);
++	return read32((void *)reg);
+ }
+ static inline void spi_reg_write(uint32_t reg, uint32_t val)
+ {
+-	write32p(reg, val);
++	write32((void *)reg, val);
+ }
+ static inline void spi_reg_bit_set(uint32_t reg, uint32_t bitMask)
+ {
+diff --git a/src/drivers/bus/spi/intel_gspi.c b/src/drivers/bus/spi/intel_gspi.c
+index 47ae4272..1100af9a 100644
+--- a/src/drivers/bus/spi/intel_gspi.c
++++ b/src/drivers/bus/spi/intel_gspi.c
+@@ -114,14 +114,14 @@ typedef struct intel_gspi_xfer_params {
+ static uint32_t gspi_read_mmio_reg(const IntelGspi *dev, uint32_t offset)
+ {
+ 	assert(dev->mmio_base != 0);
+-	return read32p(dev->mmio_base + offset);
++	return read32((void *)(dev->mmio_base + offset));
+ }
+ 
+ static void gspi_write_mmio_reg(const IntelGspi *dev, uint32_t offset,
+ 				uint32_t value)
+ {
+ 	assert(dev->mmio_base != 0);
+-	write32p(dev->mmio_base + offset, value);
++	write32((void *)(dev->mmio_base + offset), value);
+ }
+ 
+ enum cs_assert {
+diff --git a/src/drivers/flash/fast_spi.c b/src/drivers/flash/fast_spi.c
+index ddf9c38b..1689bfe6 100644
+--- a/src/drivers/flash/fast_spi.c
++++ b/src/drivers/flash/fast_spi.c
+@@ -24,16 +24,16 @@
+ /* Read register from the FAST_SPI flash controller. */
+ static uint32_t fast_spi_flash_ctrlr_reg_read(FastSpiFlash *flash, uint16_t reg)
+ {
+-	uintptr_t addr = ALIGN_DOWN(flash->mmio_base + reg, sizeof(uint32_t));
+-	return read32p(addr);
++	uintptr_t addr =  ALIGN_DOWN(flash->mmio_base + reg, sizeof(uint32_t));
++	return read32((void *)addr);
+ }
+ 
+ /* Write to register in FAST_SPI flash controller. */
+ static void fast_spi_flash_ctrlr_reg_write(FastSpiFlash *flash,
+ 					   uint16_t reg, uint32_t val)
+ {
+-	uintptr_t addr = ALIGN_DOWN(flash->mmio_base + reg, sizeof(uint32_t));
+-	write32p(addr, val);
++	uintptr_t addr =  ALIGN_DOWN(flash->mmio_base + reg, sizeof(uint32_t));
++	write32((void *)addr, val);
+ }
+ 
+ /* Fill FDATAn FIFO in preparation for a write transaction. */
+@@ -283,7 +283,7 @@ static void fast_spi_fill_regions(FastSpiFlash *flash)
+ 	/* Go through each flash region */
+ 	for (i = 0; i < FLASH_REGION_MAX; i++, region++) {
+ 		uintptr_t reg = flash->mmio_base + SPIBAR_FREG(i);
+-		uint32_t freg = read32p(reg);
++		uint32_t freg = read32((void *)reg);
+ 
+ 		/* Extract region offset and size from FREG */
+ 		region->offset = (freg & SPIBAR_FREG_BASE_MASK) * 4 * KiB;
+@@ -303,7 +303,7 @@ FastSpiFlash *new_fast_spi_flash(uintptr_t mmio_base)
+ 	uint32_t rom_size = lib_sysinfo.spi_flash.size;
+ 	uint32_t sector_size = lib_sysinfo.spi_flash.sector_size;
+ 
+-	uint32_t val = read32p(mmio_base + SPIBAR_BIOS_BFPREG);
++	uint32_t val = read32((void *)(mmio_base + SPIBAR_BIOS_BFPREG));
+ 
+ 	uintptr_t mmap_start;
+ 	size_t bios_base, bios_end, mmap_size;
+diff --git a/src/drivers/power/armada38x.c b/src/drivers/power/armada38x.c
+index 16ae58fb..166e5f7b 100644
+--- a/src/drivers/power/armada38x.c
++++ b/src/drivers/power/armada38x.c
+@@ -25,8 +25,10 @@
+ static int armada38x_reboot(struct PowerOps *me)
+ {
+ 	//software reset
+-	setbits32p(CPU_RSTOUTN_MASK_REG, 1 << 0);
+-	setbits32p(CPU_SYS_SOFT_RST_REG, 1 << 0);
++	write32((void *)CPU_RSTOUTN_MASK_REG,
++		(read32((void *)CPU_RSTOUTN_MASK_REG) | (1 << 0)));
++	write32((void *)CPU_SYS_SOFT_RST_REG,
++		(read32((void *)CPU_SYS_SOFT_RST_REG) | (1 << 0)));
+ 	for (;;)
+ 		;
+ 	return 0;
+diff --git a/src/drivers/soc/cse/cse.c b/src/drivers/soc/cse/cse.c
+index f273ac3f..ba62a3d0 100644
+--- a/src/drivers/soc/cse/cse.c
++++ b/src/drivers/soc/cse/cse.c
+@@ -92,12 +92,12 @@ static uintptr_t get_cse_bar(pcidev_t dev)
+ 
+ static uint32_t read_bar(pcidev_t dev, uint32_t offset)
+ {
+-	return read32p(get_cse_bar(dev) + offset);
++	return read32((void *)get_cse_bar(dev) + offset);
+ }
+ 
+ static void write_bar(pcidev_t dev, uint32_t offset, uint32_t val)
+ {
+-	return write32p(get_cse_bar(dev) + offset, val);
++	return write32((void *)get_cse_bar(dev) + offset, val);
+ }
+ 
+ static uint32_t read_cse_csr(void)
+diff --git a/src/drivers/soc/cse/cse_spec.c b/src/drivers/soc/cse/cse_spec.c
+index 4db0bf66..bf3c74ff 100644
+--- a/src/drivers/soc/cse/cse_spec.c
++++ b/src/drivers/soc/cse/cse_spec.c
+@@ -60,7 +60,7 @@ static uintptr_t get_spi_bar(pcidev_t dev)
+ 
+ static uint32_t spi_read_bar(pcidev_t dev, uint32_t offset)
+ {
+-	return read32p(get_spi_bar(dev) + offset);
++	return read32((void *)get_spi_bar(dev) + offset);
+ }
+ static uint32_t spi_read_bios_gpr0(void)
+ {
+diff --git a/src/drivers/soc/picasso.c b/src/drivers/soc/picasso.c
+index 05858836..c20f9f1d 100644
+--- a/src/drivers/soc/picasso.c
++++ b/src/drivers/soc/picasso.c
+@@ -79,7 +79,7 @@ void emmc_set_ios(MmcCtrlr *mmc_ctrlr)
+ 
+ unsigned int emmc_get_platform_info(void)
+ {
+-	u32 reg = read32p(EMMCHC + SDHCI_CAPABILITIES_1);
++	u32 reg = read32((void *)EMMCHC + SDHCI_CAPABILITIES_1);
+ 	unsigned int platform_info = 0;
+ 
+ 	/*
+diff --git a/src/drivers/storage/rtk_mmc.h b/src/drivers/storage/rtk_mmc.h
+index 39bf08bb..f4559d08 100644
+--- a/src/drivers/storage/rtk_mmc.h
++++ b/src/drivers/storage/rtk_mmc.h
+@@ -882,12 +882,12 @@ typedef struct {
+ 
+ static inline void rtsx_writel(RtkMmcHost *host, u32 reg, u32 val)
+ {
+-	write32(host->ioaddr + reg, val);
++	write32((void *)((uintptr_t)host->ioaddr + reg), val);
+ }
+ 
+ static inline u32 rtsx_readl(RtkMmcHost *host, u32 reg)
+ {
+-	return read32(host->ioaddr + reg);
++	return read32((void *)((uintptr_t)host->ioaddr + reg));
+ }
+ 
+ int rtsx_write_register(RtkMmcHost *host, u16 addr, u8 mask, u8 data);

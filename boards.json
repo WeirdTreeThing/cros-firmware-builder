@@ -26,5 +26,12 @@
 		"ec": "none",
 		"bmpblk": "rammus",
 		"depthcharge": "qemu"
+	},
+	"vilboz": {
+		"coreboot": "vilboz",
+		"libpayload": "zork",
+		"ec": "vilboz",
+		"bmpblk": "zork",
+		"depthcharge": "zork"
 	}
 }
