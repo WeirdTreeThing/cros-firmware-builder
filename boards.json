@@ -24,7 +24,7 @@
 		"coreboot": "qemu",
 		"libpayload": "qemu",
 		"ec": "none",
-		"bmpblk": "rammus",
+		"bmpblk": "zork",
 		"depthcharge": "qemu"
 	},
 	"vilboz": {
