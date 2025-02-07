@@ -55,8 +55,8 @@ function make_image()
     $cbfstool $out expand -r FW_MAIN_A,FW_MAIN_B
 
     # Add depthcharge payload
-    add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/depthcharge.elf" "COREBOOT" $out
-    add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/depthcharge.elf" "FW_MAIN_A,FW_MAIN_B" $out
+    add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/dev.elf" "COREBOOT" $out
+    add_payload $board "fallback/payload" "$ROOT/build/$board/depthcharge/dev.elf" "FW_MAIN_A,FW_MAIN_B" $out
 
     # Add firmware assets
     add_assets $board $out

@@ -47,7 +47,7 @@ function build_depthcharge()
 	"KBUILD_DEFCONFIG=$ROOT/build/$board/depthcharge/$board-defconfig"
     )
     make -j$(nproc) ${OPTS[@]} defconfig
-    make -j$(nproc) ${OPTS[@]} depthcharge
-    strip $ROOT/build/$board/depthcharge/depthcharge.elf
+    make -j$(nproc) ${OPTS[@]} dev
+    strip $ROOT/build/$board/depthcharge/dev.elf
     popd
 }
