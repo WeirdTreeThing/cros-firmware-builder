@@ -1,0 +1,42 @@
+diff --git a/src/mainboard/google/octopus/Kconfig b/src/mainboard/google/octopus/Kconfig
+index e627b88581..ff14ceecb4 100644
+--- a/src/mainboard/google/octopus/Kconfig
++++ b/src/mainboard/google/octopus/Kconfig
+@@ -21,13 +21,10 @@ config BOARD_GOOGLE_BASEBOARD_OCTOPUS
+ 	select HAVE_ACPI_TABLES
+ 	select INTEL_LPSS_UART_FOR_CONSOLE
+ 	select MAINBOARD_HAS_CHROMEOS
+-	select MAINBOARD_HAS_TPM2
+ 	select NO_BOOTBLOCK_CONSOLE
+ 	select SOC_ESPI
+ 	select SOC_INTEL_GEMINILAKE
+-	select SPI_TPM
+ 	select SYSTEM_TYPE_LAPTOP
+-	select TPM_GOOGLE_CR50
+ 
+ config BOARD_GOOGLE_AMPTON
+ 	select BOARD_GOOGLE_BASEBOARD_OCTOPUS
+@@ -111,6 +108,9 @@ config CHROMEOS
+ 	select HAS_RECOVERY_MRC_CACHE
+ 	select VBOOT_LID_SWITCH
+ 
++config VBOOT
++	select VBOOT_MOCK_SECDATA
++
+ config MAINBOARD_DIR
+ 	default "google/octopus"
+ 
+@@ -163,13 +163,6 @@ config INCLUDE_NHLT_BLOBS
+ 	select NHLT_DMIC_2CH_16B
+ 	select NHLT_MAX98357
+ 
+-config DRIVER_TPM_SPI_BUS
+-	default 0x1
+-
+-config TPM_TIS_ACPI_INTERRUPT
+-	int
+-	default 63 # GPE0_DW1_31 (GPIO_63)
+-
+ config DRAM_PART_NUM_NOT_ALWAYS_IN_CBI
+ 	bool
+ 	default y if BOARD_GOOGLE_BOBBA

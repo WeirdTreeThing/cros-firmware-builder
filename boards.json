@@ -33,5 +33,12 @@
 		"ec": "vilboz",
 		"bmpblk": "zork",
 		"depthcharge": "zork"
+	},
+	"blooguard": {
+		"coreboot": "bloog",
+		"libpayload": "octopus",
+		"ec": "bloog",
+		"bmpblk": "dedede",
+		"depthcharge": "octopus"
 	}
 }
