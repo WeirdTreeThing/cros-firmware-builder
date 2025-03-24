@@ -15,8 +15,8 @@ function clone_depthcharge()
 
 function depthcharge_create_venv()
 {
-    python -m venv depthcharge-venv
-    source depthcharge-venv/bin/activate
+    python -m venv $ROOT/sources/depthcharge-venv
+    source $ROOT/sources/depthcharge-venv/bin/activate
     pip install kconfiglib
 }
 
@@ -25,10 +25,10 @@ function build_depthcharge()
     board=$1
     config=$(get_depthcharge_config $board)
 
+    [ ! -d "$ROOT/sources/depthcharge-venv" ] && depthcharge_create_venv
+    source $ROOT/sources/depthcharge-venv/bin/activate
     [ ! -d "$ROOT/sources/depthcharge" ] && clone_depthcharge
     pushd $ROOT/sources/depthcharge
-    [ ! -d "depthcharge-venv" ] && depthcharge_create_venv
-    source depthcharge-venv/bin/activate
 
     git reset --hard
 	git clean -df
