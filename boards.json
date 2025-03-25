@@ -10,7 +10,7 @@
 		"coreboot": "careena",
 		"libpayload": "grunt",
 		"ec": "careena",
-		"bmpblk": "grunt",
+		"bmpblk": "zork",
 		"depthcharge": "grunt"
 	},
 	"vortininja": {
