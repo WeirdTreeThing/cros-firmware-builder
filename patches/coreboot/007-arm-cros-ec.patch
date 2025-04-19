@@ -1,0 +1,28 @@
+diff --git a/src/ec/google/chromeec/ec_sync.c b/src/ec/google/chromeec/ec_sync.c
+index 47b894edb4..601c168fb4 100644
+--- a/src/ec/google/chromeec/ec_sync.c
++++ b/src/ec/google/chromeec/ec_sync.c
+@@ -78,7 +78,7 @@ static void google_chromeec_reboot_ro(void)
+ 	halt();
+ }
+ 
+-static ssize_t burst = 0;
++static uint32_t burst = 0;
+ 
+ /*
+  * Write a block into EC flash.  Expects params_data to be a buffer where
+@@ -150,12 +150,12 @@ static enum cb_err google_chromeec_flash_write(void *image, uint32_t region_offs
+ 		return CB_ERR;
+ 	}
+ 
+-	printk(BIOS_DEBUG, "ec_flash_write(): burst size 0x%lx\n", burst);
++	printk(BIOS_DEBUG, "ec_flash_write(): burst size 0x%x\n", burst);
+ 	printk(BIOS_DEBUG, "ec_flash_write(): image size 0x%x\n", image_size);
+ 	printk(BIOS_DEBUG, "ec_flash_write(): region offset 0x%x\n", region_offset);
+ 
+ 	/* Allocate buffer on the stack */
+-	params = alloca(burst + sizeof(*params));
++	params = malloc(burst + sizeof(*params));
+ 
+ 	/* Fill up the buffer */
+ 	end = region_offset + image_size;

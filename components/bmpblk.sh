@@ -20,7 +20,7 @@ function bmpblk_create_venv()
     source bmpblk-venv/bin/activate
     pip install pillow
     pip install pyyaml
-    pip install "grit @ git+$grit_url"
+    pip install "grit @ git+$grit_url@1933085"
 }
 
 function install_fonts()

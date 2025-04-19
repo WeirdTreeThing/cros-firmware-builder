@@ -46,8 +46,9 @@ function build_depthcharge()
 	"DOTCONFIG=$ROOT/build/$board/depthcharge/$board.config"
 	"KBUILD_DEFCONFIG=$ROOT/build/$board/depthcharge/$board-defconfig"
     )
+	export CROSS_COMPILE=arm-none-eabi-
     make -j$(nproc) ${OPTS[@]} defconfig
     make -j$(nproc) ${OPTS[@]} depthcharge
-    strip $ROOT/build/$board/depthcharge/depthcharge.elf
+    ${CROSS_COMPILE}strip $ROOT/build/$board/depthcharge/depthcharge.elf
     popd
 }

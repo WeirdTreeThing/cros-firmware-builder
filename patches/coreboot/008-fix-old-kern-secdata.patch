@@ -1,0 +1,13 @@
+diff --git a/src/security/vboot/secdata_tpm.c b/src/security/vboot/secdata_tpm.c
+index 8714dd8fed..895dd9b290 100644
+--- a/src/security/vboot/secdata_tpm.c
++++ b/src/security/vboot/secdata_tpm.c
+@@ -38,7 +38,7 @@ tpm_result_t antirollback_read_space_kernel(struct vb2_context *ctx)
+ 
+ 	/* Start with the version 1.0 size used by all modern Cr50/Ti50 boards. */
+ 	rc = tlcl_read(KERNEL_NV_INDEX, ctx->secdata_kernel, size);
+-	if (rc == TPM_CB_RANGE) {
++	if (rc == 0x11) {
+ 		/* Fallback to version 0.2(minimum) size and re-read. */
+ 		VBDEBUG("Antirollback: NV read out of range, trying min size\n");
+ 		size = VB2_SECDATA_KERNEL_MIN_SIZE;

@@ -12,7 +12,7 @@ function clone_coreboot()
 {
     git clone $coreboot_url -b $coreboot_tag $ROOT/sources/coreboot
     pushd $ROOT/sources/coreboot
-    make crossgcc-i386 CPUS=$(nproc)
+    make crossgcc-arm CPUS=$(nproc)
     popd
 }
 

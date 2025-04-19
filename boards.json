@@ -40,5 +40,12 @@
 		"ec": "bloog",
 		"bmpblk": "dedede",
 		"depthcharge": "octopus"
+	},
+	"speedy": {
+		"coreboot": "speedy",
+		"libpayload": "veyron",
+		"ec": "speedy",
+		"bmpblk": "hana",
+		"depthcharge": "veyron_speedy"
 	}
 }
