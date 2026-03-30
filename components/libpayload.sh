@@ -1,5 +1,5 @@
 vboot_url="https://chromium.googlesource.com/chromiumos/platform/vboot_reference"
-vboot_branch="main"
+vboot_branch="release-R147-16610.B"
 
 function get_libpayload_config()
 {

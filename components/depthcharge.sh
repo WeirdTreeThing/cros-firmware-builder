@@ -1,5 +1,5 @@
 depthcharge_url="https://chromium.googlesource.com/chromiumos/platform/depthcharge"
-depthcharge_branch="main"
+depthcharge_branch="release-R147-16610.B"
 
 function get_depthcharge_config()
 {
@@ -31,7 +31,7 @@ function build_depthcharge()
     pushd $ROOT/sources/depthcharge
 
     git reset --hard
-	git clean -df
+    git clean -df
     for patch in $ROOT/patches/depthcharge/*; do
         patch -p1 < $patch
     done

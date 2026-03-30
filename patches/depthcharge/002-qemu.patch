@@ -1,14 +1,18 @@
 diff --git a/board/qemu/defconfig b/board/qemu/defconfig
 new file mode 100644
-index 00000000..9294aa4a
+index 000000000..d49cc0aa2
 --- /dev/null
 +++ b/board/qemu/defconfig
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,31 @@
 +# Arch
 +CONFIG_ARCH_X86=y
 +
 +# Board
 +CONFIG_BOARD_DIR="qemu"
++
++# Android
++CONFIG_BOOTCONFIG=y
++CONFIG_FASTBOOT_IN_PROD=y
 +
 +# Image
 +CONFIG_HEAP_SIZE=0x02600000
@@ -33,14 +37,14 @@ index 00000000..9294aa4a
 +CONFIG_DRIVER_SDHCI=y
 diff --git a/src/board/qemu/Makefile.inc b/src/board/qemu/Makefile.inc
 new file mode 100644
-index 00000000..9b50f2c5
+index 000000000..9b50f2c54
 --- /dev/null
 +++ b/src/board/qemu/Makefile.inc
 @@ -0,0 +1 @@
 +depthcharge-y += board.c
 diff --git a/src/board/qemu/board.c b/src/board/qemu/board.c
 new file mode 100644
-index 00000000..80361f1a
+index 000000000..80361f1a9
 --- /dev/null
 +++ b/src/board/qemu/board.c
 @@ -0,0 +1,34 @@
@@ -79,7 +83,7 @@ index 00000000..80361f1a
 +
 +INIT_FUNC(board_setup);
 diff --git a/src/drivers/flash/Kconfig b/src/drivers/flash/Kconfig
-index d91414b8..dae0db29 100644
+index d91414b83..dae0db296 100644
 --- a/src/drivers/flash/Kconfig
 +++ b/src/drivers/flash/Kconfig
 @@ -20,6 +20,11 @@ config DRIVER_FLASH_MEMMAPPED
@@ -95,7 +99,7 @@ index d91414b8..dae0db29 100644
  	bool "Mediatek SPI-NOR flash controller (SNFC)"
  	select DRIVER_FLASH
 diff --git a/src/drivers/flash/Makefile.inc b/src/drivers/flash/Makefile.inc
-index 15509633..a535c342 100644
+index 5084af391..553257631 100644
 --- a/src/drivers/flash/Makefile.inc
 +++ b/src/drivers/flash/Makefile.inc
 @@ -14,6 +14,7 @@
@@ -103,12 +107,12 @@ index 15509633..a535c342 100644
  depthcharge-$(CONFIG_DRIVER_FLASH_FAST_SPI) += fast_spi.c
  depthcharge-$(CONFIG_DRIVER_FLASH_MEMMAPPED) += memmapped.c
 +depthcharge-$(CONFIG_DRIVER_FLASH_MEMMAPPED_QEMU) += memmapped-qemu.c
- depthcharge-$(CONFIG_DRIVER_FLASH_MMAP_BACKED) += memmapped.c
  depthcharge-$(CONFIG_DRIVER_FLASH_SPI) += spi.c
  depthcharge-$(CONFIG_DRIVER_CBFS_FLASH) += cbfs.c
+ depthcharge-$(CONFIG_DRIVER_FLASH_MTK_SNFC) += mtk_snfc.c
 diff --git a/src/drivers/flash/memmapped-qemu.c b/src/drivers/flash/memmapped-qemu.c
 new file mode 100644
-index 00000000..16f9ecd6
+index 000000000..9e803c720
 --- /dev/null
 +++ b/src/drivers/flash/memmapped-qemu.c
 @@ -0,0 +1,88 @@
@@ -136,7 +140,7 @@ index 00000000..16f9ecd6
 +
 +#define ROM_SIZE 0x00800000 // Assume 8MiB rom
 +
-+const struct flash_mmap_window window = {
++const struct flash_mmap_window qemu_window = {
 +	.flash_base = 0,
 +	.host_base = 0x100000000 - ROM_SIZE,
 +    .size = ROM_SIZE,
@@ -145,7 +149,7 @@ index 00000000..16f9ecd6
 +static const struct flash_mmap_window *find_mmap_window(uint32_t offset,
 +							uint32_t size)
 +{
-+	return &window;
++	return &qemu_window;
 +}
 +
 +static int mmap_flash_read(void *buffer, uint32_t offset, uint32_t size,
