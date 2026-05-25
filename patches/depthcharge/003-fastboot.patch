@@ -1,0 +1,24 @@
+diff --git a/src/fastboot/Makefile.inc b/src/fastboot/Makefile.inc
+index a44695c99..4998c1834 100644
+--- a/src/fastboot/Makefile.inc
++++ b/src/fastboot/Makefile.inc
+@@ -11,12 +11,11 @@
+ ## GNU General Public License for more details.
+ ##
+ 
+-depthcharge-y += fastboot_stubs.c
+ 
+-fastboot-y += cmd.c
+-fastboot-y += disk.c
+-fastboot-y += fastboot.c
+-fastboot-y += log.c
+-fastboot-y += tcp.c
+-fastboot-y += vars.c
+-fastboot-y += usb.c
++depthcharge-y += cmd.c
++depthcharge-y += disk.c
++depthcharge-y += fastboot.c
++depthcharge-y += log.c
++depthcharge-y += tcp.c
++depthcharge-y += vars.c
++depthcharge-y += usb.c

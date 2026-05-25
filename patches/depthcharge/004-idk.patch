@@ -1,0 +1,32 @@
+diff --git a/src/vboot/ui/screens.c b/src/vboot/ui/screens.c
+index be1a7750d..e366a767a 100644
+--- a/src/vboot/ui/screens.c
++++ b/src/vboot/ui/screens.c
+@@ -1171,12 +1171,7 @@ static const char *const fastboot_desc[] = {
+ 
+ static vb2_error_t fastboot_screen_init(struct ui_context *ui)
+ {
+-	/* Validity check, should never happen */
+-	if (!(ui->ctx->flags & VB2_CONTEXT_FASTBOOT_ALLOWED)) {
+-		UI_ERROR("ERROR: Fastboot not allowed\n");
+-		return ui_screen_back(ui);
+-	}
+-
++	
+ 	return VB2_SUCCESS;
+ }
+ 
+@@ -1571,12 +1566,7 @@ static vb2_error_t start_fastboot_if_requested(struct ui_context *ui)
+ 	struct list_node *devs;
+ 	get_all_bdevs(BLOCKDEV_FIXED, &devs);
+ 
+-	/* Validity check, should never happen */
+-	if (!(ui->ctx->flags & VB2_CONTEXT_FASTBOOT_ALLOWED)) {
+-		UI_ERROR("ERROR: Fastboot not allowed\n");
+-		return VB2_SUCCESS;
+-	}
+-
++	
+ 	BlockDev *bdev = NULL;
+ 	list_for_each(bdev, *devs, list_node) {
+ 		GptData *gpt = alloc_gpt(bdev);

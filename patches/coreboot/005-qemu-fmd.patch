@@ -1,8 +1,22 @@
 diff --git a/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd b/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
-index 8064fdfeaf..59d20c4264 100644
+index 8bc95f846c..22c94c8f91 100644
 --- a/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
 +++ b/src/mainboard/emulation/qemu-q35/vboot-rwab-8M.fmd
-@@ -15,7 +15,7 @@ FLASH@0xff800000 0x800000 {
+@@ -3,22 +3,22 @@ FLASH 0x800000 {
+ 		RW_SECTION_A 0x1c0000 {
+ 			VBLOCK_A 0x10000
+ 			FW_MAIN_A(CBFS)
+-			RW_FWID_A 0x40
++			RW_FWID_A 0x80
+ 		}
+ 		RW_SECTION_B 0x1c0000 {
+ 			VBLOCK_B 0x10000
+ 			FW_MAIN_B(CBFS)
+-			RW_FWID_B 0x40
++			RW_FWID_B 0x80
+ 		}
+ 		RW_SHARED 0x4000 {
+ 			SHARED_DATA 0x2000
  			VBLOCK_DEV 0x2000
  		}
  		RW_VPD(PRESERVE) 0x1000
@@ -10,4 +24,8 @@ index 8064fdfeaf..59d20c4264 100644
 +		RW_LEGACY(CBFS) 0x100000
  		WP_RO {
  			FMAP 0x800
- 			RO_FRID 0x40
+-			RO_FRID 0x40
++			RO_FRID 0x80
+ 			RO_PADDING 0x7c0
+ 			RO_VPD(PRESERVE) 0x1000
+ 			GBB 0x1e000

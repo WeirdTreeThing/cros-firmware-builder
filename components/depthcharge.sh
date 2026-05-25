@@ -1,5 +1,5 @@
 depthcharge_url="https://chromium.googlesource.com/chromiumos/platform/depthcharge"
-depthcharge_branch="release-R147-16610.B"
+depthcharge_branch="release-R149-16667.B"
 
 function get_depthcharge_config()
 {
@@ -38,7 +38,7 @@ function build_depthcharge()
 
     mkdir -p $ROOT/build/$board/depthcharge
     cp $ROOT/build/$board/coreboot/static_fw_config.h $ROOT/build/$board/depthcharge/
-    cp $ROOT/sources/depthcharge/board/$config/defconfig $ROOT/build/$board/depthcharge/$board-defconfig
+    cp $ROOT/sources/depthcharge/configs/config.$config $ROOT/build/$board/depthcharge/$board-defconfig
     OPTS=(
         "EC_HEADERS=$ROOT/build/ec_headers"
 	"LIBPAYLOAD_DIR=$ROOT/build/$board/libpayload/libpayload"

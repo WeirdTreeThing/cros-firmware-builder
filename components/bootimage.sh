@@ -65,5 +65,5 @@ function make_image()
     $cbfstool $out print | grep AGESA && agesa_rw $board $out
 
     sign_image $out
-    futility gbb --set --flags=0x8ab8 $out
+    futility gbb --set --flags=0xaab8 $out
 }
